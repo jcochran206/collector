@@ -7,8 +7,10 @@
 //
 
 import UIKit
-
+import CoreData
 class CreateItemViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+   // var managedObjectContext:NSManagedObjectContext!
 
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var titleTextField: UITextField!
@@ -18,18 +20,30 @@ class CreateItemViewController: UIViewController, UIImagePickerControllerDelegat
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+       managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     }
     
     override func viewWillAppear(_ animated: Bool) {
         cameraBtn.isEnabled = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)
         
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+       if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            imageView.image = image
+       }else {
+        print("error with image conversion")
+        }
+        self.dismiss(animated: true, completion: nil)
     }
+    
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    
+    
+
     
     func openImagePicker(source: UIImagePickerControllerSourceType){
         let chosenPicker = UIImagePickerController()
@@ -47,15 +61,24 @@ class CreateItemViewController: UIViewController, UIImagePickerControllerDelegat
     }
     
     @IBAction func addBtnTapped(_ sender: Any) {
+        if let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext {
+            let collectible = Collectible(context: context)
+            collectible.title = titleTextField.text
+            do {
+                try self.managedObjectContext.save()
+            }catch{
+                print("\(error.localizedDescription)")
+            }
+            
+        }
     }
-    /*
-    // MARK: - Navigation
+    
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    
+   //func createImageItem(with image:UIImage) {
+   //      let createImage = Collectible(context: managedObjectContext)
+   //     createImage.image = NSData(data: UIImageJPEGRepresentation(image, 1.0)!) as Data
+   // }
+
 
 }

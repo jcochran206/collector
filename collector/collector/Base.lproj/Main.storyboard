@@ -56,7 +56,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Search-eye" translatesAutoresizingMaskIntoConstraints="NO" id="oTT-Rs-uPd">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Search-eye" translatesAutoresizingMaskIntoConstraints="NO" id="oTT-Rs-uPd">
                                 <rect key="frame" x="16" y="138" width="343" height="343"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="oTT-Rs-uPd" secondAttribute="height" multiplier="1:1" id="Qaj-V1-kC4"/>
