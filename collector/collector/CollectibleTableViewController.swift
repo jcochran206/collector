@@ -38,9 +38,26 @@ class CollectibleTableViewController: UITableViewController {
        let collectables = collection[indexPath.row]
         cell.textLabel?.text = collectables.title
         if let data = collectables.image {
+            
         cell.imageView?.image = UIImage(data: data)
+            
         }
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            if let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext{
+                let collectable = collection[indexPath.row]
+                context.delete(collectable)
+                (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+                getCollectables()
+            }
+        }
     }
 
 }

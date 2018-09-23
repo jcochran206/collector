@@ -72,11 +72,6 @@ class CreateItemViewController: UIViewController, UIImagePickerControllerDelegat
            navigationController?.popViewController(animated: true)
 }
 
-    
-   //func createImageItem(with image:UIImage) {
-   //      let createImage = Collectible(context: managedObjectContext)
-   //     createImage.image = NSData(data: UIImageJPEGRepresentation(image, 1.0)!) as Data
-   // }
 
 
 }
