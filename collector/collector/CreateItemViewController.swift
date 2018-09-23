@@ -15,26 +15,27 @@ class CreateItemViewController: UIViewController, UIImagePickerControllerDelegat
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var cameraBtn: UIBarButtonItem!
+    var pickerController = UIImagePickerController()
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
-       managedObjectContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        cameraBtn.isEnabled = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera)
+        pickerController.delegate = self
         
     }
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-       if let image = info[UIImagePickerControllerOriginalImage] as? UIImage {
+    override func viewWillAppear(_ animated: Bool) {
+        cameraBtn.isEnabled = UIImagePickerController.isSourceTypeAvailable(UIImagePickerController.SourceType.camera)
+        
+    }
+    
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let image = info[.originalImage] as? UIImage {
             imageView.image = image
-       }else {
-        print("error with image conversion")
         }
-        self.dismiss(animated: true, completion: nil)
+        picker.dismiss(animated: true, completion: nil)
     }
     
     
@@ -45,7 +46,7 @@ class CreateItemViewController: UIViewController, UIImagePickerControllerDelegat
     
 
     
-    func openImagePicker(source: UIImagePickerControllerSourceType){
+    func openImagePicker(source: UIImagePickerController.SourceType){
         let chosenPicker = UIImagePickerController()
         chosenPicker.delegate = self
         chosenPicker.sourceType = source
@@ -64,15 +65,12 @@ class CreateItemViewController: UIViewController, UIImagePickerControllerDelegat
         if let context = (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext {
             let collectible = Collectible(context: context)
             collectible.title = titleTextField.text
-            do {
-                try self.managedObjectContext.save()
-            }catch{
-                print("\(error.localizedDescription)")
-            }
+            collectible.image = imageView.image?.jpegData(compressionQuality: 1.0)
+            (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
             
         }
-    }
-    
+           navigationController?.popViewController(animated: true)
+}
 
     
    //func createImageItem(with image:UIImage) {
@@ -81,4 +79,14 @@ class CreateItemViewController: UIViewController, UIImagePickerControllerDelegat
    // }
 
 
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
 }
